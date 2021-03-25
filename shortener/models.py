@@ -1,15 +1,16 @@
 from hashlib import sha256
+from time import time
 
 from django.db import models
 
 
 class Link(models.Model):
     hash = models.CharField(max_length=250)
-    destination_link = models.CharField(max_length=250)
+    url = models.CharField(max_length=250)
     created = models.DateTimeField(auto_now_add=True)
 
     def create_source_link(self):
-        url = str.encode(self.destination_link)
+        url = str.encode(self.url + str(time()))
         return sha256(url).hexdigest()[:8]
 
     def __str__(self):
