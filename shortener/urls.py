@@ -1,10 +1,10 @@
 from django.urls import path
 
-from shortener.views import LinkList, LinkRedirectView, ExportView
+from shortener import views
 
 
 urlpatterns = [
-    path('', LinkList.as_view(), name='link-list'),
-    path('export/', ExportView.as_view(), name='link-export'),
-    path('<url_hash>/', LinkRedirectView.as_view(), name='link-detail'),
+    path('', views.LinkList.as_view(), name='link-list'),
+    path('links/<hash>/', views.LinkDetail.as_view(), name='link-detail'),
 ]
+
