@@ -2,7 +2,7 @@ import csv
 
 from django.http import Http404
 from django.http.response import HttpResponseRedirect, HttpResponse
-from django.views.generic.base import View
+from django.views import View
 
 from rest_framework import mixins
 from rest_framework import generics
@@ -35,7 +35,6 @@ class LinkDetail(APIView):
 
     def get(self, request, hash):
         link = self.get_object(hash)
-        # return Response({'link': link.destination_link})
         return HttpResponseRedirect(redirect_to=link.url)
 
     def delete(self, request, hash):
