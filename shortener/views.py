@@ -9,9 +9,10 @@ from rest_framework import status
 
 from .models import Link
 from .serializers import LinkSerializer
+from .mixins import CustomCreateModelMixin
 
 
-class LinkList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+class LinkList(CustomCreateModelMixin, mixins.ListModelMixin, generics.GenericAPIView):
     queryset = Link.objects.all()
     serializer_class = LinkSerializer
 
@@ -32,7 +33,7 @@ class LinkDetail(APIView):
     def get(self, request, hash):
         link = self.get_object(hash)
         # return Response({'link': link.destination_link})
-        return HttpResponseRedirect(redirect_to=link.destination_link)
+        return HttpResponseRedirect(redirect_to=link.url)
 
     def delete(self, request, hash):
         link = self.get_object(hash)
