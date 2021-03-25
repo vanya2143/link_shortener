@@ -78,7 +78,7 @@ curl --request GET -sLv \
 Response
 ```csv
 short_url,url
-http://127.0.0.1:8000/links/24c39874/,https://github.com/vanya2143
+http://127.0.0.1:8000/links/ab2ae469/,https://github.com/vanya2143
 ```
 
 ### Delete short link
