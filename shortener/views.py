@@ -13,7 +13,7 @@ from rest_framework.reverse import reverse
 
 from .models import Link
 from .serializers import LinkSerializer
-from .mixins import GetObjectMixin
+from .mixins import GetObjectMixin, GetObjectReverseUrlMixin
 
 
 def create_url_hash(url):
@@ -33,7 +33,7 @@ class LinkList(GetObjectMixin, APIView):
             url_hash = create_url_hash(serializer.validated_data.get('url'))
             short_url = reverse('link-detail', args=[url_hash], request=request)
 
-            serializer.save(hash=url_hash, short_url=short_url)
+            serializer.save(short_url=short_url)
 
             response = {
                 'short_url': serializer.data.get('short_url')
@@ -43,14 +43,13 @@ class LinkList(GetObjectMixin, APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class LinkRedirectView(GetObjectMixin, APIView):
+class LinkRedirectView(GetObjectReverseUrlMixin, GetObjectMixin, APIView):
     def get(self, request, url_hash):
-        link = self.get_object(url_hash)
-        print(link)
+        link = self.get_object(self.get_reversed_url('link-detail', url_hash, request))
         return HttpResponseRedirect(redirect_to=link.url)
 
     def delete(self, request, url_hash):
-        link = self.get_object(url_hash)
+        link = self.get_object(self.get_reversed_url('link-detail', url_hash, request))
         link.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
