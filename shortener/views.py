@@ -1,50 +1,26 @@
 import csv
 
-from django.http import Http404
 from django.http.response import HttpResponseRedirect, HttpResponse
-from django.views import View
 
-from rest_framework import mixins
-from rest_framework import generics
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.viewsets import ModelViewSet
 
 from .models import Link
 from .serializers import LinkSerializer
-from .mixins import CustomCreateModelMixin
 
 
-class LinkList(CustomCreateModelMixin, mixins.ListModelMixin, generics.GenericAPIView):
+class LinkViewSet(ModelViewSet):
     queryset = Link.objects.all()
     serializer_class = LinkSerializer
+    lookup_field = 'hash'
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return HttpResponseRedirect(redirect_to=serializer.data.get('url'))
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-
-class LinkDetail(APIView):
-    def get_object(self, hash):
-        try:
-            return Link.objects.get(hash=hash)
-        except Link.DoesNotExists:
-            raise Http404
-
-    def get(self, request, hash):
-        link = self.get_object(hash)
-        return HttpResponseRedirect(redirect_to=link.url)
-
-    def delete(self, request, hash):
-        link = self.get_object(hash)
-        link.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class ExportView(View):
-    def get(self, request):
+    @action(detail=False, name='export')
+    def export(self, request, *args, **kwargs):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="links.csv"'
 

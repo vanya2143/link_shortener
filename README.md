@@ -27,7 +27,7 @@ Use [curl](https://en.wikipedia.org/wiki/CURL) utility in code examples
 curl --request POST \
   --header "Content-Type: application/json" \
   --data '{"url":"https://github.com/vanya2143"}' \
-  http://localhost:8000/
+  http://localhost:8000/links/
 ```
 Response
 ```json
@@ -38,7 +38,7 @@ Response
 
 ### Get all short links
 ```shell
-curl --request GET http://127.0.0.1:8000
+curl --request GET http://127.0.0.1:8000/links/
 ```
 Response
 ```json
@@ -73,7 +73,7 @@ Location: https://github.com/vanya2143
 ### Get all links in csv format
 ```shell
 curl --request GET -sLv \
-     --url 'http://127.0.0.1:8000/export'
+     --url 'http://127.0.0.1:8000/links/export/'
 ```
 Response
 ```csv
