@@ -16,7 +16,7 @@ class Link(models.Model):
     url = models.CharField(max_length=250)
     created = models.DateTimeField(auto_now_add=True)
 
-    def create_source_link(self):
+    def create_hash_of_link(self):
         url = str.encode(self.url + str(time()))
         return sha256(url).hexdigest()[:8]
 
@@ -24,5 +24,5 @@ class Link(models.Model):
         return f'{self.hash} to {get_site_name(self.url)}'
 
     def save(self, *args, **kwargs):
-        self.hash = self.create_source_link()
+        self.hash = self.create_hash_of_link()
         super().save(*args, **kwargs)
